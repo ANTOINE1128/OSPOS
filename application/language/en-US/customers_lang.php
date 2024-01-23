@@ -1,8 +1,8 @@
-<?php 
-
+<?php
 $lang["customers_account_number"] = "Account #";
 $lang["customers_account_number_duplicate"] = "Account Number is already present in the database.";
-$lang["customers_available_points"] = "Available Points";
+$lang["customers_available_points"] = "Points Available";
+$lang["customers_available_points_value"] = "";
 $lang["customers_average"] = "Average spent";
 $lang["customers_avg_discount"] = "Average discount";
 $lang["customers_basic_information"] = "Information";
@@ -32,7 +32,7 @@ $lang["customers_mailchimp_activity_open"] = "Email open";
 $lang["customers_mailchimp_activity_total"] = "Email sent";
 $lang["customers_mailchimp_activity_unopen"] = "Email unopen";
 $lang["customers_mailchimp_email_client"] = "Email client";
-$lang["customers_mailchimp_info"] = "Mailchimp";
+$lang["customers_mailchimp_info"] = "MailChimp";
 $lang["customers_mailchimp_member_rating"] = "Rating";
 $lang["customers_mailchimp_status"] = "Status";
 $lang["customers_mailchimp_vip"] = "VIP";
@@ -40,7 +40,7 @@ $lang["customers_max"] = "Max. spent";
 $lang["customers_min"] = "Min. spent";
 $lang["customers_new"] = "New Customer";
 $lang["customers_none_selected"] = "You have not selected any customer(s) to delete.";
-$lang["customers_one_or_multiple"] = "customer(s)";
+$lang["customers_one_or_multiple"] = "Customer(s)";
 $lang["customers_quantity"] = "Quantity";
 $lang["customers_stats_info"] = "Stats";
 $lang["customers_successful_adding"] = "You have successfully added customer";

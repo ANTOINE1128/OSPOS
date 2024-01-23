@@ -1,9 +1,10 @@
-<?php 
-
+<?php
+$lang["module_admin_cashups"] = "";
+$lang["module_admin_cashups_desc"] = "";
 $lang["module_attributes"] = "Atribut";
 $lang["module_attributes_desc"] = "Tambah, Perbaharui, Hapus dan Cari atribut.";
 $lang["module_both"] = "Keduanya";
-$lang["module_cashups"] = "Uang Tunai";
+$lang["module_cashups"] = "Kasir";
 $lang["module_cashups_desc"] = "Tambah, Perbaharui, Hapus dan Cari Uang Tunai.";
 $lang["module_config"] = "Konfigurasi";
 $lang["module_config_desc"] = "Ubah Konfigurasi Toko.";
@@ -39,3 +40,7 @@ $lang["module_suppliers"] = "Pemasok";
 $lang["module_suppliers_desc"] = "Tambah, ubah, hapus dan cari Pemasok.";
 $lang["module_taxes"] = "Pajak";
 $lang["module_taxes_desc"] = "Konfigurasi Pajak Penjualan.";
+$lang["module_timeclocks"] = "";
+$lang["module_timeclocks_categories"] = "";
+$lang["module_timeclocks_categories_desc"] = "";
+$lang["module_timeclocks_desc"] = "";

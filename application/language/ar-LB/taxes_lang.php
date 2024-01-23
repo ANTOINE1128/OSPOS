@@ -1,5 +1,4 @@
-<?php 
-
+<?php
 $lang["taxes_add_exception"] = "أضافة أستثناء";
 $lang["taxes_cascade"] = "تتالي";
 $lang["taxes_cascade_sequence"] = "تسلسل متتالي";
@@ -14,6 +13,7 @@ $lang["taxes_group_seq"] = "تسلسل المجموعة";
 $lang["taxes_jurisdiction_name"] = "اسم الولاية القضائية";
 $lang["taxes_name"] = "الاسم";
 $lang["taxes_new"] = "ضريبة جديدة";
+$lang["taxes_no_taxes"] = "";
 $lang["taxes_no_taxes_to_display"] = "لا يوجد أكواد ضريبية للعرض";
 $lang["taxes_reporting_authority"] = "السلطة الضريبية";
 $lang["taxes_round_half_down"] = "نصف الاسفل";
@@ -54,7 +54,7 @@ $lang["taxes_tax_codes_saved_successfully"] = "تم حفظ تغييرات قان
 $lang["taxes_tax_codes_saved_unsuccessfully"] = "لم يتم حفظ تغييرات قانون الضريبة";
 $lang["taxes_tax_excluded"] = "لا تشمل الضرائب";
 $lang["taxes_tax_group"] = "المجموعة الضريبية";
-$lang["taxes_tax_group_not_unique"] = "";
+$lang["taxes_tax_group_not_unique"] = "فئة الضرائب يجب ان تكون فريده";
 $lang["taxes_tax_group_sequence"] = "تسلسل مجموعة الضرائب";
 $lang["taxes_tax_included"] = "الضريبة مشمولة";
 $lang["taxes_tax_jurisdiction"] = "الاختصاص الضريبي";

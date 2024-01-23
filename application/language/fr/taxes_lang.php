@@ -1,5 +1,4 @@
-<?php 
-
+<?php
 $lang["taxes_add_exception"] = "Ajouter une exception";
 $lang["taxes_cascade"] = "Cascade";
 $lang["taxes_cascade_sequence"] = "Séquence en cascade";
@@ -14,6 +13,7 @@ $lang["taxes_group_seq"] = "Groupe de Seq";
 $lang["taxes_jurisdiction_name"] = "Nom de la Juridiction";
 $lang["taxes_name"] = "Nom";
 $lang["taxes_new"] = "Nouvelle Taxe";
+$lang["taxes_no_taxes"] = "";
 $lang["taxes_no_taxes_to_display"] = "Aucun Code Fiscal à afficher";
 $lang["taxes_reporting_authority"] = "Autorité Concernée";
 $lang["taxes_round_half_down"] = "Arrondir au Nombre Inférieur";
@@ -23,7 +23,7 @@ $lang["taxes_round_half_up"] = "Arrondir au Nombre Supérieur";
 $lang["taxes_rounding_code"] = "Type d'Arrondi";
 $lang["taxes_sales_tax"] = "Taxe de vente";
 $lang["taxes_sales_tax_by_invoice"] = "Taxe de Vente pour les Factures";
-$lang["taxes_sequence"] = "Seq.";
+$lang["taxes_sequence"] = "Séq.";
 $lang["taxes_state"] = "État/Région";
 $lang["taxes_successful_deleted"] = "Vous avez supprimé avec succès";
 $lang["taxes_tax_categories"] = "Catégorie Fiscal";
@@ -54,7 +54,7 @@ $lang["taxes_tax_codes_saved_successfully"] = "Changements des Codes Fiscal enre
 $lang["taxes_tax_codes_saved_unsuccessfully"] = "Changements des Codes Fiscal n'ont pas été enregistrés";
 $lang["taxes_tax_excluded"] = "Taxe exclue";
 $lang["taxes_tax_group"] = "Groupe Fiscal";
-$lang["taxes_tax_group_not_unique"] = "";
+$lang["taxes_tax_group_not_unique"] = "Groupe fiscal %1 n'est pas unique";
 $lang["taxes_tax_group_sequence"] = "Séquence du Groupe Fiscal";
 $lang["taxes_tax_included"] = "Taxe Inclue";
 $lang["taxes_tax_jurisdiction"] = "Juridiction Fiscal";

@@ -9,21 +9,7 @@ class Sale extends CI_Model
 	 */
 	public function get_info($sale_id)
 	{
-		$this->db->query('CREATE TEMPORARY TABLE IF NOT EXISTS ' . $this->db->dbprefix('sales_payments_temp') .
-			' (PRIMARY KEY(sale_id), INDEX(sale_id))
-			(
-				SELECT payments.sale_id AS sale_id,
-					SUM(CASE WHEN payments.cash_adjustment = 0 THEN payments.payment_amount ELSE 0 END) AS sale_payment_amount,
-					SUM(CASE WHEN payments.cash_adjustment = 1 THEN payments.payment_amount ELSE 0 END) AS sale_cash_adjustment,
-					SUM(payments.cash_refund) AS sale_cash_refund,
-					GROUP_CONCAT(CONCAT(payments.payment_type, " ", (payments.payment_amount - payments.cash_refund)) SEPARATOR ", ") AS payment_type
-				FROM ' . $this->db->dbprefix('sales_payments') . ' AS payments
-				INNER JOIN ' . $this->db->dbprefix('sales') . ' AS sales
-					ON sales.sale_id = payments.sale_id
-				WHERE sales.sale_id = ' . $this->db->escape($sale_id) . '
-				GROUP BY sale_id
-			)'
-		);
+		$this->create_temp_table(array('sale_id' => $sale_id));
 
 		$decimals = totals_decimals();
 		$sales_tax = 'IFNULL(SUM(sales_items_taxes.sales_tax), 0)';
@@ -31,20 +17,15 @@ class Sale extends CI_Model
 		$sale_price = 'CASE WHEN sales_items.discount_type = ' . PERCENT
 			. " THEN sales_items.quantity_purchased * sales_items.item_unit_price - ROUND(sales_items.quantity_purchased * sales_items.item_unit_price * sales_items.discount / 100, $decimals) "
 			. 'ELSE sales_items.quantity_purchased * (sales_items.item_unit_price - sales_items.discount) END';
-		$cash_adjustment = 'IFNULL(SUM(payments.sale_cash_adjustment), 0)';
 
 		if($this->config->item('tax_included'))
 		{
-			$sale_total = 'ROUND(SUM(' . $sale_price . '), ' . $decimals . ') + ' . $cash_adjustment;
-			$sale_subtotal = $sale_total . ' - ' . $internal_tax;
+			$sale_total = "ROUND(SUM($sale_price), $decimals) + $cash_adjustment";
 		}
 		else
 		{
-			$sale_subtotal = 'ROUND(SUM(' . $sale_price . '), ' . $decimals . ') - ' . $internal_tax . ' - ' . $cash_adjustment;
-			$sale_total = 'ROUND(SUM(' . $sale_price . '), ' . $decimals . ') + ' . $sales_tax . ' + ' . $cash_adjustment;
+			$sale_total = "ROUND(SUM($sale_price), $decimals) + $sales_tax + $cash_adjustment";
 		}
-
-
 
 		$this->db->select('
 				sales.sale_id AS sale_id,
@@ -52,7 +33,6 @@ class Sale extends CI_Model
 				MAX(sales.sale_time) AS sale_time,
 				MAX(sales.comment) AS comment,
 				MAX(sales.sale_status) AS sale_status,
-				MAX(sales.sale_type) AS sale_type,
 				MAX(sales.invoice_number) AS invoice_number,
 				MAX(sales.quote_number) AS quote_number,
 				MAX(sales.employee_id) AS employee_id,
@@ -145,7 +125,7 @@ class Sale extends CI_Model
 		$cash_adjustment = 'IFNULL(SUM(payments.sale_cash_adjustment), 0)';
 
 		$sale_subtotal = "ROUND(SUM($sale_price), $decimals) - $internal_tax";
-		$sale_total = 'ROUND(SUM(' . $sale_price . '), ' . $decimals . ') + ' . $sales_tax . ' + ' . $cash_adjustment;
+		$sale_total = "ROUND(SUM($sale_price), $decimals) + $sales_tax + $cash_adjustment";
 
 		// create a temporary table to contain all the sum of taxes per sale item
 		$this->db->query('CREATE TEMPORARY TABLE IF NOT EXISTS ' . $this->db->dbprefix('sales_items_taxes_temp') .
@@ -180,7 +160,6 @@ class Sale extends CI_Model
 					MAX(sales.sale_time) AS sale_time,
 					MAX(sales.invoice_number) AS invoice_number,
 					MAX(sales.quote_number) AS quote_number,
-					MAX(sales.sale_type) AS sale_type,
 					SUM(sales_items.quantity_purchased) AS items_purchased,
 					MAX(CONCAT(customer_p.first_name, " ", customer_p.last_name)) AS customer_name,
 					MAX(customer.company_name) AS company_name,
@@ -595,13 +574,8 @@ class Sale extends CI_Model
 	 * The sales_taxes variable needs to be initialized to an empty array before calling
 	 */
 	public function save($sale_id, &$sale_status, &$items, $customer_id, $employee_id, $comment, $invoice_number,
-							$work_order_number, $quote_number, $sale_type, $payments, $dinner_table, &$sales_taxes,
-							$exchange_rate)
+							$work_order_number, $quote_number, $sale_type, $payments, $dinner_table, &$sales_taxes)
 	{
-
-		$number_locale_alt = $this->session->userdata('sales_number_locale_alt');
-		$currency_symbol_alt = $this->session->userdata('sales_currency_symbol_alt');
-
 		if($sale_id != -1)
 		{
 			$this->clear_suspended_sale_detail($sale_id);
@@ -615,20 +589,17 @@ class Sale extends CI_Model
 		}
 
 		$sales_data = array(
-			'sale_time'				=> date('Y-m-d H:i:s'),
-			'customer_id'			=> $this->Customer->exists($customer_id) ? $customer_id : NULL,
-			'employee_id'			=> $employee_id,
-			'comment'				=> $comment,
-			'sale_status'			=> $sale_status,
-			'invoice_number'		=> $invoice_number,
-			'quote_number'			=> $quote_number,
-			'work_order_number'		=> $work_order_number,
-			'dinner_table_id'		=> $dinner_table,
-			'sale_status'			=> $sale_status,
-			'sale_type'				=> $sale_type,
-			'exchange_rate'			=> $exchange_rate,
-			'number_locale_alt'		=> $number_locale_alt,
-			'currency_symbol_alt'	=> $currency_symbol_alt
+			'sale_time'			=> date('Y-m-d H:i:s'),
+			'customer_id'		=> $this->Customer->exists($customer_id) ? $customer_id : NULL,
+			'employee_id'		=> $employee_id,
+			'comment'			=> $comment,
+			'sale_status'		=> $sale_status,
+			'invoice_number'	=> $invoice_number,
+			'quote_number'		=> $quote_number,
+			'work_order_number'	=> $work_order_number,
+			'dinner_table_id'	=> $dinner_table,
+			'sale_status'		=> $sale_status,
+			'sale_type'			=> $sale_type
 		);
 
 		// Run these queries as a transaction, we want to make sure we do all or nothing
@@ -662,6 +633,11 @@ class Sale extends CI_Model
 				$total_amount_used = floatval($total_amount_used) + floatval($payment['payment_amount']);
 			}
 
+			if($payment['cash_adjustment'] == NULL)
+			{
+				$payment['cash_adjustment'] = CASH_ADJUSTMENT_FALSE;
+			}
+			
 			$sales_payments_data = array(
 				'sale_id'		  => $sale_id,
 				'payment_type'	  => $payment['payment_type'],
@@ -673,11 +649,12 @@ class Sale extends CI_Model
 
 			$this->db->insert('sales_payments', $sales_payments_data);
 
-			$total_amount = floatval($total_amount) + floatval($payment['payment_amount']);
+			$total_amount = floatval($total_amount) + floatval($payment['payment_amount']) - floatval($payment['cash_refund']);
+
 		}
-
+		
 		$this->save_customer_rewards($customer_id, $sale_id, $total_amount, $total_amount_used);
-
+		
 		$customer = $this->Customer->get_info($customer_id);
 
 		foreach($items as $line=>$item)
@@ -1138,13 +1115,13 @@ class Sale extends CI_Model
 
 		if($this->config->item('tax_included'))
 		{
-			$sale_total = 'ROUND(SUM(' . $sale_price . '), ' . $decimals . ') + ' . $cash_adjustment;
+			$sale_total = "ROUND(SUM($sale_price), $decimals) + $cash_adjustment";
 			$sale_subtotal = "$sale_total - $internal_tax";
 		}
 		else
 		{
-			$sale_subtotal = 'ROUND(SUM(' . $sale_price . '), ' . $decimals . ') - ' . $internal_tax . ' + ' . $cash_adjustment;
-			$sale_total = 'ROUND(SUM(' . $sale_price . '), ' . $decimals . ') + ' . $sales_tax . ' + ' . $cash_adjustment;
+			$sale_subtotal = "ROUND(SUM($sale_price), $decimals) - $internal_tax + $cash_adjustment";
+			$sale_total = "ROUND(SUM($sale_price), $decimals) + $sales_tax + $cash_adjustment";
 		}
 
 		// create a temporary table to contain all the sum of taxes per sale item
@@ -1327,60 +1304,6 @@ class Sale extends CI_Model
 		if($row != NULL)
 		{
 			return $row->quote_number;
-		}
-
-		return NULL;
-	}
-
-	/**
-	 * Gets the exchange_rate for the selected sale
-	 */
-	public function get_exchange_rate($sale_id)
-	{
-		$this->db->from('sales');
-		$this->db->where('sale_id', $sale_id);
-
-		$row = $this->db->get()->row();
-
-		if($row != NULL)
-		{
-			return $row->exchange_rate;
-		}
-
-		return NULL;
-	}
-
-	/**
-	 * Gets the exchange_rate for the selected sale
-	 */
-	public function get_currency_symbol_alt($sale_id)
-	{
-		$this->db->from('sales');
-		$this->db->where('sale_id', $sale_id);
-
-		$row = $this->db->get()->row();
-
-		if($row != NULL)
-		{
-			return $row->currency_symbol_alt;
-		}
-
-		return NULL;
-	}
-
-	/**
-	 * Gets the number_locale_alt for the selected sale
-	 */
-	public function get_number_locale_alt($sale_id)
-	{
-		$this->db->from('sales');
-		$this->db->where('sale_id', $sale_id);
-
-		$row = $this->db->get()->row();
-
-		if($row != NULL)
-		{
-			return $row->number_locale_alt;
 		}
 
 		return NULL;

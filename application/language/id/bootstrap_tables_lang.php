@@ -1,6 +1,6 @@
 <?php 
 
-$lang["tables_all"] = "Semua";
+$lang["tables_all"] = "semua";
 $lang["tables_columns"] = "Kolom";
 $lang["tables_hide_show_pagination"] = "Sembunyikan/Tampilkan paginasi";
 $lang["tables_loading"] = "Memuat, tunggu ...";

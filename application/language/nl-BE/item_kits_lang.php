@@ -1,5 +1,4 @@
-<?php 
-
+<?php
 $lang["item_kits_add_item"] = "Nieuw Product";
 $lang["item_kits_all"] = "Alle";
 $lang["item_kits_cannot_be_deleted"] = "De sets konden niet worden verwijderd.";
@@ -14,9 +13,10 @@ $lang["item_kits_error_adding_updating"] = "Fout bij het toevoegen/aanpassen van
 $lang["item_kits_find_kit_item"] = "Item Set";
 $lang["item_kits_info"] = "Productset Info";
 $lang["item_kits_item"] = "Product";
-$lang["item_kits_item_kit_number"] = "";
-$lang["item_kits_item_kit_number_duplicate"] = "";
+$lang["item_kits_item_kit_number"] = "Streepjescode";
+$lang["item_kits_item_kit_number_duplicate"] = "Artikel Kit Nummer is reeds aanwezig in de database.";
 $lang["item_kits_item_number"] = "";
+$lang["item_kits_item_number_duplicate"] = "";
 $lang["item_kits_items"] = "Producten";
 $lang["item_kits_kit"] = "Productset Id";
 $lang["item_kits_kit_and_components"] = "Productset en onderdelen";
@@ -35,4 +35,5 @@ $lang["item_kits_sequence"] = "Sequentie";
 $lang["item_kits_successful_adding"] = "Productset succesvol toegevoegd";
 $lang["item_kits_successful_deleted"] = "Er werd(en)";
 $lang["item_kits_successful_updating"] = "Wijzigingen Productset bewaard";
+$lang["item_kits_unit_price"] = "";
 $lang["item_kits_update"] = "Bewaar Productset";

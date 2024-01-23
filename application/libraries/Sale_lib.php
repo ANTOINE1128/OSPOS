@@ -203,6 +203,7 @@ class Sale_lib
 		if(!$keep_custom || empty($current_invoice_number))
 		{
 			$this->CI->session->set_userdata('sales_invoice_number', $invoice_number);
+
 		}
 	}
 
@@ -636,73 +637,6 @@ class Sale_lib
 		$this->CI->session->set_userdata('sales_employee', $employee_id);
 	}
 
-	public function get_exchange_rate()
-	{
-		if(!$this->CI->session->userdata('sales_exchange_rate'))
-		{
-
-			$this->set_exchange_rate($this->CI->config->item('last_exchange_rate'));
-		}
-
-		return $this->CI->session->userdata('sales_exchange_rate');
-	}
-
-	public function set_exchange_rate($exchange_rate)
-	{
-		$this->CI->session->set_userdata('sales_exchange_rate', $exchange_rate);
-	}
-
-
-	public function set_last_exchange_rate($exchange_rate)
-	{
-		$this->CI->Appconfig->save('last_exchange_rate', $exchange_rate);
-	}
-
-	public function is_apply_exchange_rate()
-	{
-		if(!$this->CI->session->userdata('sales_apply_exchange_rate'))
-		{
-			$this->set_apply_exchange_rate(0);
-		}
-
-		return $this->CI->session->userdata('sales_apply_exchange_rate');
-	}
-
-	public function set_apply_exchange_rate($apply_exchange_rate)
-	{
-		$this->CI->session->set_userdata('sales_apply_exchange_rate', $apply_exchange_rate);
-	}
-
-	public function get_number_locale_alt()
-	{
-		if(!$this->CI->session->userdata('sales_number_locale_alt'))
-		{
-			$this->set_number_locale_alt($this->CI->config->item('number_locale_alt'));
-		}
-
-		return $this->CI->session->userdata('sales_number_locale_alt');
-	}
-
-	public function set_number_locale_alt($number_locale_alt)
-	{
-		$this->CI->session->set_userdata('sales_number_locale_alt', $number_locale_alt);
-	}
-
-	public function get_currency_symbol_alt()
-	{
-		if(!$this->CI->session->userdata('sales_currency_symbol_alt'))
-		{
-			$this->set_currency_symbol_alt($this->CI->config->item('currency_symbol_alt'));
-		}
-
-		return $this->CI->session->userdata('sales_currency_symbol_alt');
-	}
-
-	public function set_currency_symbol_alt($currency_symbol_alt)
-	{
-		$this->CI->session->set_userdata('sales_currency_symbol_alt', $currency_symbol_alt);
-	}
-
 	public function remove_employee()
 	{
 		$this->CI->session->unset_userdata('sales_employee');
@@ -810,7 +744,7 @@ class Sale_lib
 		$this->CI->session->unset_userdata('sales_rewards_remainder');
 	}
 
-	public function add_item(&$item_id, $quantity = 1, $item_location, $discount = 0.0, $discount_type = 0, $price_mode = PRICE_MODE_STANDARD, $kit_price_option = NULL, $kit_print_option = NULL, $price_override = NULL, $description = NULL, $serialnumber = NULL, $sale_id = NULL, $include_deleted = FALSE, $print_option = NULL, $line = NULL)
+	public function add_item(&$item_id, $quantity = 1, $item_location, &$discount = 0.0, $discount_type = 0, $price_mode = PRICE_MODE_STANDARD, $kit_price_option = NULL, $kit_print_option = NULL, $price_override = NULL, $description = NULL, $serialnumber = NULL, $sale_id = NULL, $include_deleted = FALSE, $print_option = NULL, $line = NULL)
 	{
 		$item_info = $this->CI->Item->get_info_by_id_or_number($item_id, $include_deleted);
 		//make sure item exists
@@ -820,38 +754,45 @@ class Sale_lib
 			return FALSE;
 		}
 
-		$cost_price = 0.00;
+		$applied_discount = $discount;
 		$item_id = $item_info->item_id;
 		$item_type = $item_info->item_type;
 		$stock_type = $item_info->stock_type;
 
-		if($price_mode == PRICE_MODE_STANDARD)
-		{
-			$price = $item_info->unit_price;
-			$cost_price = $item_info->cost_price;
-		}
-		elseif($price_mode == PRICE_MODE_KIT)
-		{
-			if($kit_price_option == PRICE_OPTION_ALL)
-			{
-				$price = $item_info->unit_price;
-				$cost_price = $item_info->cost_price;
-			}
-			elseif($kit_price_option == PRICE_OPTION_KIT  && $item_type == ITEM_KIT)
-			{
-				$price = $item_info->unit_price;
-				$cost_price = $item_info->cost_price;
-			}
-			elseif($kit_price_option == PRICE_OPTION_KIT_STOCK && $stock_type == HAS_STOCK)
-			{
-				$price = $item_info->unit_price;
-				$cost_price = $item_info->cost_price;
-			}
-		}
-
+		$price = $item_info->unit_price;
+		$cost_price = $item_info->cost_price;
 		if($price_override != NULL)
 		{
 			$price = $price_override;
+		}
+
+		if($price_mode == PRICE_MODE_KIT)
+		{
+			if(!($kit_price_option == PRICE_OPTION_ALL
+				|| $kit_price_option == PRICE_OPTION_KIT  && $item_type == ITEM_KIT
+				|| $kit_price_option == PRICE_OPTION_KIT_STOCK && $stock_type == HAS_STOCK))
+			{
+				$price = 0.00;
+				$applied_discount = 0.00;
+			}
+			// If price is zero do not include a discount regardless of type
+			if($price == 0.00)
+			{
+				$applied_discount = 0.00;
+			}
+			// If fixed discount then apply no more than the item price
+			if($discount_type == FIXED)
+			{
+				if($applied_discount > $price)
+				{
+					$applied_discount = $price;
+					$discount -= $applied_discount;
+				}
+				else
+				{
+					$discount = 0;
+				}
+			}
 		}
 
 		// Serialization and Description
@@ -924,8 +865,8 @@ class Sale_lib
 			}
 		}
 
-		$total = $this->get_item_total($quantity, $price, $discount, $discount_type);
-		$discounted_total = $this->get_item_total($quantity, $price, $discount, $discount_type, TRUE);
+		$total = $this->get_item_total($quantity, $price, $applied_discount, $discount_type);
+		$discounted_total = $this->get_item_total($quantity, $price, $applied_discount, $discount_type, TRUE);
 
 		if($this->CI->config->item('multi_pack_enabled') == '1')
 		{
@@ -951,7 +892,7 @@ class Sale_lib
 					'allow_alt_description' => $item_info->allow_alt_description,
 					'is_serialized' => $item_info->is_serialized,
 					'quantity' => $quantity,
-					'discount' => $discount,
+					'discount' => $applied_discount,
 					'discount_type' => $discount_type,
 					'in_stock' => $this->CI->Item_quantity->get_item_quantity($item_id, $item_location)->quantity,
 					'price' => $price,
@@ -1101,6 +1042,7 @@ class Sale_lib
 		$pieces = explode(' ', $external_item_kit_id);
 		$item_kit_id = (count($pieces) > 1) ? $pieces[1] : $external_item_kit_id;
 		$result = TRUE;
+		$applied_discount = $discount;
 
 		foreach($this->CI->Item_kit_items->get_info($item_kit_id) as $item_kit_item)
 		{
@@ -1158,9 +1100,6 @@ class Sale_lib
 		$this->set_customer($this->CI->Sale->get_customer($sale_id)->person_id);
 		$this->set_employee($this->CI->Sale->get_employee($sale_id)->person_id);
 		$this->set_quote_number($this->CI->Sale->get_quote_number($sale_id));
-		$this->set_exchange_rate($this->CI->Sale->get_exchange_rate($sale_id));
-		$this->set_number_locale_alt($this->CI->Sale->get_number_locale_alt($sale_id));
-		$this->set_currency_symbol_alt($this->CI->Sale->get_currency_symbol_alt($sale_id));
 		$this->set_work_order_number($this->CI->Sale->get_work_order_number($sale_id));
 		$this->set_sale_type($this->CI->Sale->get_sale_type($sale_id));
 		$this->set_comment($this->CI->Sale->get_comment($sale_id));
@@ -1189,13 +1128,6 @@ class Sale_lib
 		$this->empty_payments();
 		$this->remove_customer();
 		$this->clear_cash_flags();
-		$this->clear_exchange_rate_info();
-	}
-
-	public function clear_exchange_rate_info()
-	{
-		$this->CI->session->unset_userdata('sales_apply_exchange_rate');
-		$this->CI->session->unset_userdata('sales_exchange_rate');
 	}
 
 	public function clear_cash_flags()
@@ -1412,10 +1344,7 @@ class Sale_lib
 
 		if($include_cash_rounding && $cash_mode)
 		{
-			if($cash_mode)
-			{
-				$total = $this->check_for_cash_rounding($total);
-			}
+			$total = $this->check_for_cash_rounding($total);
 		}
 
 		return $total;

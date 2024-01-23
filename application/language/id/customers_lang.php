@@ -1,8 +1,8 @@
-<?php 
-
-$lang["customers_account_number"] = "No Pelanggan";
-$lang["customers_account_number_duplicate"] = "Nomor akun ini telah tersimpan di basis data.";
-$lang["customers_available_points"] = "Poin yg tersedia";
+<?php
+$lang["customers_account_number"] = "Akun #";
+$lang["customers_account_number_duplicate"] = "Nomor akun ini telah ada di basis data.";
+$lang["customers_available_points"] = "Poin tersedia";
+$lang["customers_available_points_value"] = "";
 $lang["customers_average"] = "Rata-rata yang dihabiskan";
 $lang["customers_avg_discount"] = "Rata-rata diskon";
 $lang["customers_basic_information"] = "Informasi";
@@ -12,7 +12,7 @@ $lang["customers_confirm_delete"] = "Apakah Anda yakin ingin menghapus pelanggan
 $lang["customers_confirm_restore"] = "Anda yakin akan mengembalikan pelanggan terpilih?";
 $lang["customers_consent"] = "Persetujuan pendaftaran";
 $lang["customers_consent_required"] = "Persetujuan pendaftaran adalah bidang yang harus diisi.";
-$lang["customers_csv_import_failed"] = "Impor dari CSV tidak berhasil dilakukan";
+$lang["customers_csv_import_failed"] = "Impor dari CSV gagal";
 $lang["customers_csv_import_nodata_wrongformat"] = "Berkas yang Anda unggah tidak berisi data atau salah format.";
 $lang["customers_csv_import_partially_failed"] = "Impor pelanggan berhasil dwngan beberapa kesalahan:";
 $lang["customers_csv_import_success"] = "Impor pelanggan berhasil.";
@@ -32,7 +32,7 @@ $lang["customers_mailchimp_activity_open"] = "Buka email";
 $lang["customers_mailchimp_activity_total"] = "Email terkirim";
 $lang["customers_mailchimp_activity_unopen"] = "Email belum dibuka";
 $lang["customers_mailchimp_email_client"] = "Klien email";
-$lang["customers_mailchimp_info"] = "Mailchimp Info";
+$lang["customers_mailchimp_info"] = "MailChimp";
 $lang["customers_mailchimp_member_rating"] = "Peringkat";
 $lang["customers_mailchimp_status"] = "Status";
 $lang["customers_mailchimp_vip"] = "VIP";
@@ -40,7 +40,7 @@ $lang["customers_max"] = "Max. dihabiskan";
 $lang["customers_min"] = "Min. dihabiskan";
 $lang["customers_new"] = "Pelanggan Baru";
 $lang["customers_none_selected"] = "Anda belum memilih pelanggan untuk dihapus.";
-$lang["customers_one_or_multiple"] = "pelanggan";
+$lang["customers_one_or_multiple"] = "Pelanggan";
 $lang["customers_quantity"] = "Kuantitas";
 $lang["customers_stats_info"] = "Statistik";
 $lang["customers_successful_adding"] = "Anda telah berhasil menambah pelanggan";

@@ -22,6 +22,8 @@ if(isset($success))
 <!-- Top register controls -->
 
 	<?php echo form_open($controller_name."/change_mode", array('id'=>'mode_form', 'class'=>'form-horizontal panel panel-default')); ?>
+	      
+			
 		<div class="panel-body form-group">
 			<ul>
 				<li class="pull-left first_li">
@@ -73,6 +75,7 @@ if(isset($success))
 				<?php
 				}
 				?>
+
 			</ul>
 		</div>
 	<?php echo form_close(); ?>
@@ -136,8 +139,8 @@ if(isset($success))
 					<?php echo form_open($controller_name."/edit_item/$line", array('class'=>'form-horizontal', 'id'=>'cart_'.$line)); ?>
 						<tr>
 							<td>
+								<span data-item-id="<?php echo $line; ?>" class="delete_item_button"><span class="glyphicon glyphicon-trash"></span></span>
 								<?php
-								echo anchor($controller_name . "/delete_item/$line", '<span class="glyphicon glyphicon-trash"></span>');
 								echo form_hidden('location', $item['item_location']);
 								echo form_input(array('type'=>'hidden', 'name'=>'item_id', 'value'=>$item['item_id']));
 								?>
@@ -157,21 +160,9 @@ if(isset($success))
 							?>
 								<td><?php echo $item['item_number']; ?></td>
 								<td style="align: center;">
-									<?php echo $item['name'] . ' ' . $item['attribute_values']; ?>
+									<?php echo $item['name'] . ' '. implode(' ', array($item['attribute_values'], $item['attribute_dtvalues'])); ?>
 									<br/>
-									<?php if($apply_exchange_rate)
-									{
-									?>
-										<?php if ($item['stock_type'] == '0'): echo '[' . to_quantity_decimals($item['in_stock'] / $exchange_rate) . ' in ' . $item['stock_name'] . ']'; endif; ?>
-									<?php
-									}
-									else
-									{
-									?>
-										<?php if ($item['stock_type'] == '0'): echo '[' . to_quantity_decimals($item['in_stock']) . ' in ' . $item['stock_name'] . ']'; endif; ?>
-									<?php
-									}
-									?>
+									<?php if ($item['stock_type'] == '0'): echo '[' . to_quantity_decimals($item['in_stock']) . ' in ' . $item['stock_name'] . ']'; endif; ?>
 								</td>
 							<?php
 							}
@@ -179,7 +170,7 @@ if(isset($success))
 
 							<td>
 								<?php
-							if($items_module_allowed)
+								if($items_module_allowed && $change_price)
 								{
 									echo form_input(array('name'=>'price', 'class'=>'form-control input-sm', 'value'=>to_currency_no_money($item['price']), 'tabindex'=>++$tabindex, 'onClick'=>'this.select();'));
 								}
@@ -199,22 +190,15 @@ if(isset($success))
 									echo form_hidden('quantity', $item['quantity']);
 								}
 								else
-								{									
-									if($apply_exchange_rate)
-									{
-										echo form_input(array('name'=>'quantity', 'class'=>'form-control input-sm', 'value'=>to_quantity_decimals($item['quantity'] / $exchange_rate), 'tabindex'=>++$tabindex, 'onClick'=>'this.select();'));
-									}
-									else
-									{
-										echo form_input(array('name'=>'quantity', 'class'=>'form-control input-sm', 'value'=>to_quantity_decimals($item['quantity']), 'tabindex'=>++$tabindex, 'onClick'=>'this.select();'));
-									}
+								{
+									echo form_input(array('name'=>'quantity', 'class'=>'form-control input-sm', 'value'=>to_quantity_decimals($item['quantity']), 'tabindex'=>++$tabindex, 'onClick'=>'this.select();'));
 								}
 								?>
 							</td>
 
 							<td>
 								<div class="input-group">
-									<?php echo form_input(array('name'=>'discount', 'class'=>'form-control input-sm', 'value'=>$item['discount'], 'tabindex'=>++$tabindex, 'onClick'=>'this.select();')); ?>
+									<?php echo form_input(array('name'=>'discount', 'class'=>'form-control input-sm', 'value'=>$item['discount_type'] ? to_currency_no_money($item['discount']) : to_decimals($item['discount']), 'tabindex'=>++$tabindex, 'onClick'=>'this.select();')); ?>
 									<span class="input-group-btn">
 										<?php echo form_checkbox(array('id'=>'discount_toggle', 'name'=>'discount_toggle', 'value'=>1, 'data-toggle'=>"toggle",'data-size'=>'small', 'data-onstyle'=>'success', 'data-on'=>'<b>'.$this->config->item('currency_symbol').'</b>', 'data-off'=>'<b>%</b>', 'data-line'=>$line, 'checked'=>$item['discount_type'])); ?>
 									</span>
@@ -401,8 +385,10 @@ if(isset($success))
 					?>
 				</table>
 
-				<?php echo anchor($controller_name."/remove_customer", '<span class="glyphicon glyphicon-remove">&nbsp</span>' . $this->lang->line('common_remove').' '.$this->lang->line('customers_customer'),
-								array('class'=>'btn btn-danger btn-sm', 'id'=>'remove_customer_button', 'title'=>$this->lang->line('common_remove').' '.$this->lang->line('customers_customer'))); ?>
+				<button class="btn btn-danger btn-sm" id="remove_customer_button" title="<?php echo $this->lang->line('common_remove').' '.$this->lang->line('customers_customer')?>">
+					<span class="glyphicon glyphicon-remove">&nbsp</span><?php echo $this->lang->line('common_remove').' '.$this->lang->line('customers_customer') ?>
+				</button>
+
 			<?php
 			}
 			else
@@ -415,25 +401,17 @@ if(isset($success))
 					<button class='btn btn-info btn-sm modal-dlg' data-btn-submit="<?php echo $this->lang->line('common_submit') ?>" data-href="<?php echo site_url("customers/view"); ?>"
 							title="<?php echo $this->lang->line($controller_name. '_new_customer'); ?>">
 						<span class="glyphicon glyphicon-user">&nbsp</span><?php echo $this->lang->line($controller_name. '_new_customer'); ?>
+					</button>					
+					<button class='btn btn-default btn-sm modal-dlg' id='show_keyboard_help' data-href="<?php echo site_url("$controller_name/sales_keyboard_help"); ?>"
+							title="<?php echo $this->lang->line('sales_key_title'); ?>">
+						<span class="glyphicon glyphicon-share-alt">&nbsp</span><?php echo $this->lang->line('sales_key_help'); ?>
 					</button>
-
 				</div>
+			
 			<?php
 			}
 			?>
 		<?php echo form_close(); ?>
-		<!-- Currency Converter Script - EXCHANGERATEWIDGET.COM -->
-		<?php
-			if($apply_exchange_rate)
-			{
-		?>
-			<div  class="pull-center" style="width:100%;border:1px solid #55A516;"><div style="text-align:center;background-color:#4d88ff;width:100%;font-size:13px;font-weight:bold;height:18px;padding-top:2px;"><a href="https://www.exchangeratewidget.com/" style="color:#FFFFFF;text-decoration:none;" rel="nofollow">Currency Converter</a></div>
-			<script type="text/javascript" src="//www.exchangeratewidget.com/converter.php?l=en&f=USD&t=EUR&a=1&d=F0F0F0&n=FFFFFF&o=000000&v=1"></script>
-<!-- End of Currency Converter Script -->
-		<?php
-			}
-		?>
-
 
 		<table class="sales_table_100" id="sale_totals">
 			<tr>
@@ -450,7 +428,7 @@ if(isset($success))
 			{
 			?>
 				<tr>
-					<th style='width: 55%;'><?php echo (float)$tax['tax_rate'] . '% ' . $tax['name']; ?></th>
+					<th style="width: 55%;"><?php echo (float)$tax['tax_rate'] . '% ' . $tax['tax_group']; ?></th>
 					<th style="width: 45%; text-align: right;"><?php echo to_currency_tax($tax['sale_tax_amount']); ?></th>
 				</tr>
 			<?php
@@ -461,6 +439,15 @@ if(isset($success))
 				<th style="width: 55%; font-size: 150%"><?php echo $this->lang->line('sales_total'); ?></th>
 				<th style="width: 45%; font-size: 150%; text-align: right;"><span id="sale_total"><?php echo to_currency($total); ?></span></th>
 			</tr>
+			<tr>
+        <th style="width: 45%; font-size: 100%">Enter LBP Rate: </th>
+		<td style="width: 35%; text-align: right;">
+        <input type="number" name="additional_input" id="additional_input" class="form-control input-sm" value="" oninput="multiplyTotalByInput()">
+        <label for="multiply_checkbox">Check LBP Rate </label>
+        <input type="checkbox" id="multiply_checkbox" onchange="multiplyTotalByInput()" checked>
+		<span id= 'result_display'></span>
+    </td>
+    </tr>
 		</table>
 
 		<?php
@@ -476,16 +463,7 @@ if(isset($success))
 				<tr>
 					<th style="width: 55%; font-size: 120%"><?php echo $this->lang->line('sales_amount_due'); ?></th>
 					<th style="width: 45%; font-size: 120%; text-align: right;"><span id="sale_amount_due"><?php echo to_currency($amount_due); ?></span></th>
-				</tr>				
-			<?php
-			if($apply_exchange_rate)
-			{
-			?>
-				<th style="width: 55%;"><?php echo $this->lang->line('sales_due_local');?></th>
-				<th class="total-value"><?php echo $this->config->item('currency_symbol') .$amount_change; ?></th>
-			<?php
-			}
-			?>			
+				</tr>
 			</table>
 
 			<div id="payment_details">
@@ -584,7 +562,7 @@ if(isset($success))
 							{
 							?>
 								<tr>
-									<td><?php echo anchor($controller_name."/delete_payment/$payment_id", '<span class="glyphicon glyphicon-trash"></span>'); ?></td>
+									<td><span data-payment-id="<?php echo $payment_id; ?>" class="delete_payment_button"><span class="glyphicon glyphicon-trash"></span></span></td>
 									<td><?php echo $payment['payment_type']; ?></td>
 									<td style="text-align: right;"><?php echo to_currency($payment['payment_amount']); ?></td>
 								</tr>
@@ -693,32 +671,6 @@ if(isset($success))
 			<?php
 			}
 			?>
-			<?php
-			if($alt_currency_enabled)
-			{
-			?>
-				<hr/>
-				<div class="container-fluid">
-					<div class="row">
-						<div class="form-group form-group-sm">
-							<div class="col-xs-6">
-								<label for="apply_exchange_rate" class="control-label checkbox">
-									<?php echo form_checkbox(array('name'=>'apply_exchange_rate', 'id'=>'apply_exchange_rate', 'value'=>1, 'checked'=>$apply_exchange_rate)); ?>
-									<?php echo $this->lang->line('sales_apply_exchange_rate');?>
-								</label>
-							</div>
-							<div class="col-xs-6">
-								<div class="input-group input-group-sm">
-									<span class="input-group-addon input-sm">×</span>
-									<?php echo form_input(array('name'=>'exchange_rate', 'id'=>'exchange_rate', 'class'=>'form-control input-sm', 'value'=>$exchange_rate));?>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			<?php
-			}
-			?>
 		<?php
 		}
 		?>
@@ -726,8 +678,98 @@ if(isset($success))
 </div>
 
 <script type="text/javascript">
+// Function to multiply the total by the value in the input and display the result
+function multiplyTotalByInput() {
+    // Get the input element by its ID
+    var inputElement = document.getElementById('additional_input');
+    // Get the span element where the total is displayed
+    var totalElement = document.getElementById('sale_total');
+    // Get the span element for displaying the result
+    var resultElement = document.getElementById('result_display');
+    // Get the checkbox element
+    var multiplyCheckbox = document.getElementById('multiply_checkbox');
+
+    // Check if the input element, total element, result element, and checkbox exist
+    if (inputElement && totalElement && resultElement && multiplyCheckbox) {
+        // Get the value from the input element
+        var inputValue = parseFloat(inputElement.value);
+
+        // Check if the input value is a valid number
+        if (!isNaN(inputValue)) {
+            // Get the total amount from the total element
+            var totalAmount = parseFloat(totalElement.textContent.replace(/[^\d.-]/g, ''));
+
+            // Check if the total amount is a valid number
+            if (!isNaN(totalAmount)) {
+                // Multiply the total amount by the input value
+                var result = totalAmount * inputValue;
+
+                // Display the result under the input field
+                resultElement.textContent =  result + " LBP";
+
+                // Log the result to the console
+                console.log('Result: ' + result);
+            } else {
+                // Handle the case where the total amount is not a valid number
+                resultElement.textContent = 'Invalid total amount.';
+                console.log('Invalid total amount.');
+            }
+        } else {
+            // Handle the case where the input value is not a valid number
+            resultElement.textContent = 'Invalid input. Please enter a valid number.';
+            console.log('Invalid input. Please enter a valid number.');
+        }
+    } else {
+        // Handle the case where either the input, total, result, or checkbox element is not found
+        console.log('Input, total, result, or checkbox element not found.');
+    }
+}
+
+// Function to initialize the input value from local storage
+function initializeInputValue() {
+    // Get the input element by its ID
+    var inputElement = document.getElementById('additional_input');
+
+    // Check if the input element and local storage value exist
+    if (inputElement && localStorage.getItem('inputValue')) {
+        // Set the input value from local storage
+        inputElement.value = localStorage.getItem('inputValue');
+        
+        // Trigger the multiplyTotalByInput function when the input value changes
+        inputElement.addEventListener('input', multiplyTotalByInput);
+
+        // Display the result immediately
+        multiplyTotalByInput();
+    }
+}
+
+// Call the initialization function when the page loads
+window.onload = function () {
+    initializeInputValue();
+};
+////////////////////////////////////////////////////////////////////////////////////////////////
 $(document).ready(function()
 {
+	const redirect = function() {
+		window.location.href = "<?php echo site_url('sales'); ?>";
+	};
+
+	$("#remove_customer_button").click(function()
+	{
+		$.post("<?php echo site_url('sales/remove_customer'); ?>", redirect);
+	});
+
+	$(".delete_item_button").click(function()
+	{
+		const item_id = $(this).data('item-id');
+		$.post("<?php echo site_url('sales/delete_item/'); ?>" + item_id, redirect);
+	});
+
+	$(".delete_payment_button").click(function() {
+		const item_id = $(this).data('payment-id');
+		$.post("<?php echo site_url('sales/delete_payment/'); ?>" + item_id, redirect);
+	});
+
 	$("input[name='item_number']").change(function() {
 		var item_id = $(this).parents('tr').find("input[name='item_id']").val();
 		var item_number = $(this).val();
@@ -843,11 +885,6 @@ $(document).ready(function()
 		$.post("<?php echo site_url($controller_name.'/set_comment'); ?>", {comment: $('#comment').val()});
 	});
 
-	$('#exchange_rate').keyup(function()
-	{
-		$.post("<?php echo site_url($controller_name."/set_exchange_rate");?>", {exchange_rate: $('#exchange_rate').val()});
-	});
-
 	<?php
 	if($this->config->item('invoice_enable') == TRUE)
 	{
@@ -864,11 +901,8 @@ $(document).ready(function()
 		$.post("<?php echo site_url($controller_name.'/set_print_after_sale'); ?>", {sales_print_after_sale: $(this).is(':checked')});
 	});
 
-	$("#apply_exchange_rate").change(function()
-	{
-		$.post("<?php echo site_url($controller_name."/set_apply_exchange_rate");?>", {apply_exchange_rate: $(this).is(":checked")});
-	});
-
+	$('#price_work_orders').change(function() {
+		$.post("<?php echo site_url($controller_name.'/set_price_work_orders'); ?>", {price_work_orders: $(this).is(':checked')});
 	});
 
 	$('#email_receipt').change(function() {
@@ -963,7 +997,7 @@ $(document).ready(function()
 		$('#cart_'+ $(this).attr('data-line')).append($(input));
 		$('#cart_'+ $(this).attr('data-line')).submit();
 	});
-
+});
 
 function check_payment_type()
 {
@@ -997,8 +1031,54 @@ function check_payment_type()
 		$(".giftcard-input").attr('disabled', true);
 		$(".non-giftcard-input").attr('disabled', false);
 	}
-	
 }
+
+// Add Keyboard Shortcuts/Hotkeys to Sale Register
+document.body.onkeyup = function(e)
+{
+	switch(event.altKey && event.keyCode) 
+	{
+        case 49: // Alt + 1 Items Seach
+			$("#item").focus();
+			$("#item").select();
+            break;
+        case 50: // Alt + 2 Customers Search
+			$("#customer").focus();
+			$("#customer").select();
+            break;
+		case 51: // Alt + 3 Suspend Current Sale
+			$("#suspend_sale_button").click();
+			break;
+		case 52: // Alt + 4 Check Suspended
+			$("#show_suspended_sales_button").click();
+			break;
+        case 53: // Alt + 5 Edit Amount Tendered Value
+			$("#amount_tendered").focus();
+			$("#amount_tendered").select();
+            break;
+		case 54: // Alt + 6 Add Payment
+			$("#add_payment_button").click();
+			break;	
+		case 55: // Alt + 7 Add Payment and Complete Sales/Invoice
+			$("#add_payment_button").click();
+			window.location.href = "<?php echo site_url('sales/complete'); ?>";
+			break; 
+		case 56: // Alt + 8 Finish Quote/Invoice without payment
+			$("#finish_invoice_quote_button").click();
+			break;
+		case 57: // Alt + 9 Open Shortcuts Help Modal
+			$("#show_keyboard_help").click();
+			break;
+	}
+	
+	switch(event.keyCode) 
+	{
+		case 27: // ESC Cancel Current Sale
+			$("#cancel_sale_button").click();
+			break;		  
+    }
+}
+
 </script>
 
 <?php $this->load->view("partial/footer"); ?>

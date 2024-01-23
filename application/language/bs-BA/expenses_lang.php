@@ -1,5 +1,4 @@
-<?php 
-
+<?php
 $lang["expenses_add_item"] = "Dodaj trošak";
 $lang["expenses_amount"] = "Iznos";
 $lang["expenses_amount_number"] = "Iznos mora biti broj";
@@ -12,8 +11,8 @@ $lang["expenses_categories_name"] = "Kategorija";
 $lang["expenses_category_required"] = "kategorija je obavezno polje";
 $lang["expenses_check"] = "Ček";
 $lang["expenses_check_filter"] = "Ček";
-$lang["expenses_confirm_delete"] = "Da li ste sigurni da želite da izbrišete izabrani trošak?";
-$lang["expenses_confirm_restore"] = "Da li ste sigurni da želite da vratite izabrani trošak?";
+$lang["expenses_confirm_delete"] = "Da li ste sigurni da želite da izbrišete izabrane troškove?";
+$lang["expenses_confirm_restore"] = "Da li ste sigurni da želite da vratite izabrane troškove?";
 $lang["expenses_credit"] = "Kreditna kartica";
 $lang["expenses_credit_filter"] = "Kreditna kartica";
 $lang["expenses_date"] = "Datum";
@@ -29,9 +28,11 @@ $lang["expenses_error_adding_updating"] = "Greška pri dodavanju / ažuriranju t
 $lang["expenses_expense_id"] = "Id";
 $lang["expenses_expenses_employee"] = "Zaposlenik";
 $lang["expenses_info"] = "Informacije o troškovima";
+$lang["expenses_ip_address"] = "";
 $lang["expenses_is_deleted"] = "Izbrisano";
 $lang["expenses_name_required"] = "Naziv troška je obavezan";
 $lang["expenses_new"] = "Novi trošak";
+$lang["expenses_new_supplier"] = "";
 $lang["expenses_no_expenses_to_display"] = "Nema troškova za prikaz";
 $lang["expenses_none_selected"] = "Niste odabrali nijedan trošak";
 $lang["expenses_one_or_multiple"] = "Trošak(ovi)";
@@ -43,4 +44,5 @@ $lang["expenses_successful_updating"] = "Ažuriranje troškova uspješno";
 $lang["expenses_supplier_name"] = "Dobavljač";
 $lang["expenses_supplier_tax_code"] = "Poreski broj";
 $lang["expenses_tax_amount"] = "Porez";
+$lang["expenses_tax_amount_number"] = "";
 $lang["expenses_update"] = "Ažuriraj trošak";

@@ -139,7 +139,7 @@ $(document).ready(function()
 					<td class="item-name"><?php echo ($item['is_serialized'] || $item['allow_alt_description']) && !empty($item['description']) ? $item['description'] : $item['name'] . ' ' . $item['attribute_values']; ?></td>
 					<td style='text-align:center;'><?php echo to_quantity_decimals($item['quantity']); ?></td>
 					<td><?php echo to_currency($item['price']); ?></td>
-					<td style='text-align:center;'><?php echo ($item['discount_type']==FIXED)?to_currency($item['discount']):$item['discount'] . '%';?></td>
+					<td style='text-align:center;'><?php echo ($item['discount_type']==FIXED)?to_currency($item['discount']):to_decimals($item['discount']) . '%';?></td>
 					<?php if($discount > 0): ?>
 					<td style='text-align:center;'><?php echo to_currency($item['discounted_total'] / $item['quantity']); ?></td>
 					<?php endif; ?>
@@ -231,7 +231,6 @@ $(document).ready(function()
 	</table>
 
 	<div id="terms">
-		<?php if($apply_exchange_rate) echo $this->lang->line('sales_exchange_rate') . ': ' . (float)$exchange_rate; ?>
 		<div id="sale_return_policy">
 			<h5>
 				<div><?php echo nl2br($this->config->item('payment_message')); ?></div>

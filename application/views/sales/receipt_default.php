@@ -2,6 +2,7 @@
 <div id="receipt_wrapper" style="font-size:<?php echo $this->config->item('receipt_font_size');?>px">
 	<div id="receipt_header">
 		<?php
+		
 		if($this->config->item('company_logo') != '')
 		{
 		?>
@@ -75,20 +76,7 @@
 				<tr>
 					<td><?php echo ucfirst($item['name'] . ' ' . $item['attribute_values']); ?></td>
 					<td><?php echo to_currency($item['price']); ?></td>
-						<?php
-							if($apply_exchange_rate)
-							{
-						?>
-							<td><?php echo to_quantity_decimals($item['quantity'] / $exchange_rate); ?></td>
-						<?php
-							}
-							else
-							{
-							?>
-							<td><?php echo to_quantity_decimals($item['quantity']); ?></td>
-						<?php
-						}
-						?>					
+					<td><?php echo to_quantity_decimals($item['quantity']); ?></td>
 					<td class="total-value"><?php echo to_currency($item[($this->config->item('receipt_show_total_discount') ? 'total' : 'discounted_total')]); ?></td>
 					<?php
 					if($this->config->item('receipt_show_tax_ind'))
@@ -131,7 +119,7 @@
 						elseif($item['discount_type'] == PERCENT)
 						{
 						?>
-							<td colspan="3" class="discount"><?php echo number_format($item['discount'], 0) . " " . $this->lang->line("sales_discount_included") ?></td>
+							<td colspan="3" class="discount"><?php echo to_decimals($item['discount']) . " " . $this->lang->line("sales_discount_included") ?></td>
 						<?php
 						}	
 						?>
@@ -172,7 +160,7 @@
 			{
 			?>
 				<tr>
-					<td colspan="3" class="total-value"><?php echo (float)$tax['tax_rate'] . '% ' . $tax['name']; ?>:</td>
+					<td colspan="3" class="total-value"><?php echo (float)$tax['tax_rate'] . '% ' . $tax['tax_group']; ?>:</td>
 					<td class="total-value"><?php echo to_currency_tax($tax['sale_tax_amount']); ?></td>
 				</tr>
 			<?php
@@ -231,8 +219,22 @@
 			<td colspan="3" style="text-align:right;"> <?php echo $this->lang->line($amount_change >= 0 ? ($only_sale_check ? 'sales_check_balance' : 'sales_change_due') : 'sales_amount_due') ; ?> </td>
 			<td class="total-value"><?php echo to_currency($amount_change); ?></td>
 		</tr>
+		<?php
+
+$inputValue = '<script>document.write(localStorage.getItem("inputValue"));</script>';
+?>
+
+<!-- Display the inputValue in the sales receipt -->
+<tr>
+    <td>LBP CURRENCY RATE <span id="inputValueDisplay"></span></td>
+    <!-- Display the total LBP -->
+    <td id="totalLBP">Total LBP: <span id="calculatedTotalLBP"></span></td>
+</tr>
+
+<?php
+?>
 	</table>
-	<?php if($apply_exchange_rate) echo $this->lang->line('sales_exchange_rate') . ': ' . (float)$exchange_rate; ?>
+
 	<div id="sale_return_policy">
 		<?php echo nl2br($this->config->item('return_policy')); ?>
 	</div>
@@ -242,3 +244,27 @@
 		<?php echo $sale_id; ?>
 	</div>
 </div>
+<script>
+    // Retrieve the inputValue from local storage
+    var inputValue = localStorage.getItem("inputValue");
+    document.getElementById("inputValueDisplay").innerText = inputValue;
+
+    // Check if inputValue is a valid number
+    if (!isNaN(inputValue)) {
+        // Convert inputValue to a number
+        inputValue = parseFloat(inputValue);
+
+        // Check if $total is a valid number
+        if (!isNaN(<?php echo $total; ?>)) {
+            // Multiply inputValue by $total and display the result
+            var calculatedTotalLBP = inputValue * <?php echo $total; ?>;
+            document.getElementById("calculatedTotalLBP").innerText = calculatedTotalLBP;
+        } else {
+            // Handle the case where $total is not a valid number
+            console.error('Invalid total amount.');
+        }
+    } else {
+        // Handle the case where inputValue is not a valid number
+        console.error('Invalid input value.');
+    }
+</script>

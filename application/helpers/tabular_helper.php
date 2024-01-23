@@ -42,6 +42,7 @@ function transform_headers($array, $readonly = FALSE, $editable = TRUE)
 		$result[] = array('field' => key($element),
 			'title' => current($element),
 			'switchable' => isset($element['switchable']) ? $element['switchable'] : !preg_match('(^$|&nbsp)', current($element)),
+			'escape' => !preg_match("/(edit|phone_number|email|messages|item_pic)/", key($element)) && !(isset($element['escape']) && !$element['escape']),
 			'sortable' => isset($element['sortable']) ? $element['sortable'] : current($element) != '',
 			'checkbox' => isset($element['checkbox']) ? $element['checkbox'] : FALSE,
 			'class' => isset($element['checkbox']) || preg_match('(^$|&nbsp)', current($element)) ? 'print_hide' : '',
@@ -72,14 +73,10 @@ function get_sales_manage_table_headers()
 	if($CI->config->item('invoice_enable') == TRUE)
 	{
 		$headers[] = array('invoice_number' => $CI->lang->line('sales_invoice_number'));
+		$headers[] = array('invoice' => '&nbsp', 'sortable' => FALSE, 'escape' => FALSE);
 	}
 
-	$headers[] = array('reprint' => '&nbsp', 'sortable' => FALSE);
-
-	if($CI->config->item('use_alternate_currency') == '1')
-	{
-		$headers[] = array('reprint_alt' => '&nbsp', 'sortable' => FALSE);
-	}
+	$headers[] = array('receipt' => '&nbsp', 'sortable' => FALSE, 'escape' => FALSE);
 
 	return transform_headers($headers);
 }
@@ -106,34 +103,14 @@ function get_sale_data_row($sale)
 	if($CI->config->item('invoice_enable'))
 	{
 		$row['invoice_number'] = $sale->invoice_number;
-
-		$row['reprint'] = ($sale->sale_type != SALE_TYPE_INVOICE)
-			? anchor($controller_name."/receipt/$sale->sale_id", '<span class="glyphicon glyphicon-usd"></span>',
-				array('title' => $CI->lang->line('sales_show_receipt')))
-			: anchor($controller_name."/invoice/$sale->sale_id", '<span class="glyphicon glyphicon-list-alt"></span>',
-				array('title'=>$CI->lang->line('sales_show_invoice')));
-
-		if($CI->config->item('use_alternate_currency') == '1')
-		{
-			$row['reprint_alt'] = ($sale->sale_type != SALE_TYPE_INVOICE)
-				? anchor($controller_name."/receipt_alternate_currency/$sale->sale_id", '<span class="glyphicon glyphicon-usd">&#8646;</span>',
-					array('title' => $CI->lang->line('sales_show_receipt_alt')))
-				: anchor($controller_name."/invoice_alternate_currency/$sale->sale_id", '<span class="glyphicon glyphicon-list-alt">&#8646;</span>',
-					array('title'=>$CI->lang->line('sales_show_invoice_alt')));
-		}
-	}
-	else
-	{
-		$row['reprint'] = anchor($controller_name."/receipt/$sale->sale_id", '<span class="glyphicon glyphicon-usd"></span>',
-			array('title' => $CI->lang->line('sales_show_receipt')));
-
-		if($CI->config->item('use_alternate_currency') == '1')
-		{
-			$row['reprint_alt'] = anchor($controller_name."/receipt_alternate_currency/$sale->sale_id", '<span class="glyphicon glyphicon-usd"></span>',
-				array('title' => $CI->lang->line('sales_show_receipt_alt')));
-		}
+		$row['invoice'] = empty($sale->invoice_number) ? '' : anchor($controller_name."/invoice/$sale->sale_id", '<span class="glyphicon glyphicon-list-alt"></span>',
+			array('title'=>$CI->lang->line('sales_show_invoice'))
+		);
 	}
 
+	$row['receipt'] = anchor($controller_name."/receipt/$sale->sale_id", '<span class="glyphicon glyphicon-usd"></span>',
+		array('title' => $CI->lang->line('sales_show_receipt'))
+	);
 	$row['edit'] = anchor($controller_name."/edit/$sale->sale_id", '<span class="glyphicon glyphicon-edit"></span>',
 		array('class' => 'modal-dlg print_hide', 'data-btn-delete' => $CI->lang->line('common_delete'), 'data-btn-submit' => $CI->lang->line('common_submit'), 'title' => $CI->lang->line($controller_name.'_update'))
 	);
@@ -161,10 +138,10 @@ function get_sale_data_last_row($sales)
 
 	return array(
 		'sale_id' => '-',
-		'sale_time' => '<b>'.$CI->lang->line('sales_total').'</b>',
-		'amount_due' => '<b>'.to_currency($sum_amount_due).'</b>',
-		'amount_tendered' => '<b>'. to_currency($sum_amount_tendered).'</b>',
-		'change_due' => '<b>'.to_currency($sum_change_due).'</b>'
+		'sale_time' => $CI->lang->line('sales_total'),
+		'amount_due' => to_currency($sum_amount_due),
+		'amount_tendered' => to_currency($sum_amount_tendered),
+		'change_due' => to_currency($sum_change_due)
 	);
 }
 
@@ -374,8 +351,8 @@ function get_items_manage_table_headers()
 		$headers[] = array($definition_id => $definition_name, 'sortable' => FALSE);
 	}
 
-	$headers[] = array('inventory' => '');
-	$headers[] = array('stock' => '');
+	$headers[] = array('inventory' => '', 'escape' => FALSE);
+	$headers[] = array('stock' => '', 'escape' => FALSE);
 
 	return transform_headers($headers);
 }
@@ -741,9 +718,9 @@ function get_expenses_data_last_row($expense)
 
 	return array(
 		'expense_id' => '-',
-		'date' => '<b>'.$CI->lang->line('sales_total').'</b>',
-		'amount' => '<b>'. to_currency($sum_amount_expense).'</b>',
-		'tax_amount' => '<b>'. to_currency($sum_tax_amount_expense).'</b>'
+		'date' => $CI->lang->line('sales_total'),
+		'amount' => to_currency($sum_amount_expense),
+		'tax_amount' => to_currency($sum_tax_amount_expense)
 	);
 }
 
@@ -812,7 +789,7 @@ function get_cash_up_data_row($cash_up)
 		'close_date' => to_datetime(strtotime($cash_up->close_date)),
 		'close_employee_id' => $cash_up->close_first_name . ' ' . $cash_up->close_last_name,
 		'closed_amount_cash' => to_currency($cash_up->closed_amount_cash),
-		'note' => $cash_up->note ? '<span class="glyphicon glyphicon-ok"></span>' : '<span class="glyphicon glyphicon-remove"></span>',
+		'note' => $cash_up->note ? $CI->lang->line('common_yes') : $CI->lang->line('common_no'),
 		'closed_amount_due' => to_currency($cash_up->closed_amount_due),
 		'closed_amount_card' => to_currency($cash_up->closed_amount_card),
 		'closed_amount_check' => to_currency($cash_up->closed_amount_check),

@@ -1,5 +1,4 @@
-<?php 
-
+<?php
 $lang["expenses_add_item"] = "Xərc Əlavə Et";
 $lang["expenses_amount"] = "Məbləğ";
 $lang["expenses_amount_number"] = "Məbləğ rəqəm ilə olmalıdır";
@@ -12,7 +11,7 @@ $lang["expenses_categories_name"] = "Kategoriya";
 $lang["expenses_category_required"] = "Kategoriya bölməsi boş qala bilməz";
 $lang["expenses_check"] = "Çek";
 $lang["expenses_check_filter"] = "Çek";
-$lang["expenses_confirm_delete"] = "Seçilmiş xərci silmək istədiyinizə əminsinizmi?";
+$lang["expenses_confirm_delete"] = "Siz əminsinizmi ki işarələnmiş butun malları redaktə etmək istəyirsiniz?";
 $lang["expenses_confirm_restore"] = "Seçilmiş xərci (lər) bərpa etmək istədiyinizə əminsinizmi?";
 $lang["expenses_credit"] = "Kredit Kartı";
 $lang["expenses_credit_filter"] = "Kredit Kartı";
@@ -29,9 +28,11 @@ $lang["expenses_error_adding_updating"] = "Əlavədə Səhv/Xərci yeniləmək";
 $lang["expenses_expense_id"] = "Kimlilk";
 $lang["expenses_expenses_employee"] = "Əməkdaş";
 $lang["expenses_info"] = "Xərc Məlumatı";
+$lang["expenses_ip_address"] = "";
 $lang["expenses_is_deleted"] = "Silinib";
 $lang["expenses_name_required"] = "Xərcin məlumatı qeyd edilməlidir";
 $lang["expenses_new"] = "Yeni Xərc";
+$lang["expenses_new_supplier"] = "";
 $lang["expenses_no_expenses_to_display"] = "Heç bir Xərclər göstərilmir";
 $lang["expenses_none_selected"] = "Siz heç bir xərc seçməmisiniz";
 $lang["expenses_one_or_multiple"] = "Xərc (lər)";
@@ -43,4 +44,5 @@ $lang["expenses_successful_updating"] = "Xərc Uğurla Yeniləndi";
 $lang["expenses_supplier_name"] = "Təchizatçı";
 $lang["expenses_supplier_tax_code"] = "Vergi Məcəlləsi";
 $lang["expenses_tax_amount"] = "Vergi";
+$lang["expenses_tax_amount_number"] = "";
 $lang["expenses_update"] = "Xərci Yenilə";

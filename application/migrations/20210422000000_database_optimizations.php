@@ -12,7 +12,7 @@ class Migration_database_optimizations extends CI_Migration
 		error_log('Migrating database_optimizations');
 		$CI =& get_instance();
 
-		// $CI->Attribute->delete_orphaned_values();
+		$CI->Attribute->delete_orphaned_values();
 
 		$this->migrate_duplicate_attribute_values(DECIMAL);
 		$this->migrate_duplicate_attribute_values(DATE);

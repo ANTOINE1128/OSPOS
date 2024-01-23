@@ -1,5 +1,5 @@
-<?php 
-
+<?php
+$lang["receivings_amount_due"] = "";
 $lang["receivings_cancel_receiving"] = "ยกเลิก";
 $lang["receivings_cannot_be_deleted"] = "ไม่สามารถลบใบรับสินค้าได้";
 $lang["receivings_comments"] = "ความคิดเห็น";
@@ -7,7 +7,9 @@ $lang["receivings_complete_receiving"] = "เสร็จสิ้น";
 $lang["receivings_confirm_cancel_receiving"] = "คุณแน่ใจที่ต้องการล้างค่าใบรับสินค้าใช่หรือไม่? เมื่อล้างค่าแล้วทุกรายการจะถูกล้างออก";
 $lang["receivings_confirm_delete"] = "คุณต้องการลบใบรับสินค้าใช่หรือไม่? หากลบแล้วจะไม่สามารถเรียกคืนได้อีก";
 $lang["receivings_confirm_finish_receiving"] = "คุณต้องการบันทึกใบรับสินค้าใช่หรือไม่? เมื่อบันทึกแล้วไม่สามารถยกเลิกได้";
+$lang["receivings_confirm_restore"] = "";
 $lang["receivings_cost"] = "ต้นทุน";
+$lang["receivings_daily"] = "";
 $lang["receivings_date"] = "วันที่ใบรับสินค้า";
 $lang["receivings_date_required"] = "ต้องบันทึกวันที่ที่ถูกต้อง";
 $lang["receivings_date_type"] = "ต้องระบุวันที่";
@@ -34,7 +36,7 @@ $lang["receivings_reference"] = "อ้างอิง";
 $lang["receivings_register"] = "รับสินค้า";
 $lang["receivings_requisition"] = "เบิกสินค้า";
 $lang["receivings_return"] = "คืนสินค้า";
-$lang["receivings_select_supplier"] = "เลือกผู้ผลิต (ไม่ระบุก็ได้)";
+$lang["receivings_select_supplier"] = "เลือกคู่ค้า (ไม่ระบุก็ได้)";
 $lang["receivings_ship_pack"] = "แพคการขนส่ง";
 $lang["receivings_start_typing_supplier_name"] = "เริ่มต้นพิมพ์ชื่อผู้ผลิต...";
 $lang["receivings_stock"] = "คลังสินค้า";

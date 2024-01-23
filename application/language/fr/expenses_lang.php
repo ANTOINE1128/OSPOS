@@ -1,5 +1,4 @@
-<?php 
-
+<?php
 $lang["expenses_add_item"] = "Ajouter des dépenses";
 $lang["expenses_amount"] = "Montant";
 $lang["expenses_amount_number"] = "Le montant doit être un nombre";
@@ -12,8 +11,8 @@ $lang["expenses_categories_name"] = "Catégorie";
 $lang["expenses_category_required"] = "La catégorie est un champ obligatoire";
 $lang["expenses_check"] = "Chèque";
 $lang["expenses_check_filter"] = "Chèque";
-$lang["expenses_confirm_delete"] = "Êtes-vous sûr de vouloir supprimer les dépenses sélectionnées ?";
-$lang["expenses_confirm_restore"] = "Êtes-vous sûr de vouloir restaurer les dépenses sélectionnées ?";
+$lang["expenses_confirm_delete"] = "Êtes-vous certain de vouloir supprimer les dépenses sélectionnées ?";
+$lang["expenses_confirm_restore"] = "Êtes-vous certain de vouloir restaurer les dépenses sélectionnées ?";
 $lang["expenses_credit"] = "Carte de crédit";
 $lang["expenses_credit_filter"] = "Carte de crédit";
 $lang["expenses_date"] = "Date";
@@ -29,18 +28,21 @@ $lang["expenses_error_adding_updating"] = "Erreur lors de l'ajout / la mise à j
 $lang["expenses_expense_id"] = "ID";
 $lang["expenses_expenses_employee"] = "Employé";
 $lang["expenses_info"] = "Info de frais";
+$lang["expenses_ip_address"] = "";
 $lang["expenses_is_deleted"] = "Supprimé";
 $lang["expenses_name_required"] = "Nom de frais requis";
 $lang["expenses_new"] = "Nouvelle dépense";
+$lang["expenses_new_supplier"] = "";
 $lang["expenses_no_expenses_to_display"] = "Il n'y a pas de dépenses à afficher";
 $lang["expenses_none_selected"] = "Vous n'avez sélectionné aucune dépense";
 $lang["expenses_one_or_multiple"] = "Dépense (s)";
 $lang["expenses_payment"] = "Type de paiement";
-$lang["expenses_start_typing_supplier_name"] = "";
+$lang["expenses_start_typing_supplier_name"] = "Commencez à taper le nom du fournisseur...";
 $lang["expenses_successful_adding"] = "Les dépenses ajoutent avec succès";
 $lang["expenses_successful_deleted"] = "La suppression des dépenses a réussi";
 $lang["expenses_successful_updating"] = "Actualiser des dépenses réussie";
 $lang["expenses_supplier_name"] = "Fournisseur";
 $lang["expenses_supplier_tax_code"] = "Code du taxe";
 $lang["expenses_tax_amount"] = "Taxe";
+$lang["expenses_tax_amount_number"] = "";
 $lang["expenses_update"] = "Actualiser des dépenses";

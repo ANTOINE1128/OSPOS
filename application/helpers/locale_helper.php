@@ -5,6 +5,7 @@ const DEFAULT_LANGUAGE_CODE = 'en-US';
 
 define('NOW', time());
 define('MAX_PRECISION', 1e14);
+define('DEFAULT_PRECISION', 2);
 define('DEFAULT_DATE', mktime(0, 0, 0, 1, 1, 2010));
 define('DEFAULT_DATETIME', mktime(0, 0, 0, 1, 1, 2010));
 
@@ -87,6 +88,7 @@ function get_languages()
 		'ro:romanian' => 'Romanian',
 		'ru:russian' => 'Russian',
 		'sv:swedish' => 'Swedish',
+		'ta:tamil' => 'Tamil',
 		'th:thai' => 'Thai',
 		'tl-PH:talong' => 'Tagalog (Philippines)',
 		'tr:turkish' => 'Turkish',
@@ -183,6 +185,7 @@ function get_timezones()
 		'Asia/Kabul' => '(GMT+04:30) Kabul',
 		'Asia/Baku' => '(GMT+04:00) Baku',
 		'Asia/Yekaterinburg' => '(GMT+05:00) Ekaterinburg',
+		'Asia/Karachi' => '(GMT+05:00) Karachi, Islamabad',
 		'Asia/Tashkent' => '(GMT+05:00) Tashkent',
 		'Asia/Kolkata' => '(GMT+05:30) Chennai, Kolkata, Mumbai, New Delhi',
 		'Asia/Katmandu' => '(GMT+05:45) Kathmandu',
@@ -247,7 +250,7 @@ function get_payment_options()
 	$config = get_instance()->config;
 	$lang = get_instance()->lang;
 
-	$payments = array();
+	$payments = [];
 
 
 	if($config->item('payment_options_order') == 'debitcreditcash')
@@ -386,7 +389,7 @@ function to_quantity_decimals($number)
 	return to_decimals($number, 'quantity_decimals');
 }
 
-function to_decimals($number, $decimal_type, $type=\NumberFormatter::DECIMAL)
+function to_decimals($number, $decimals = NULL, $type=\NumberFormatter::DECIMAL)
 {
 	// ignore empty strings and return
 	// NOTE: do not change it to empty otherwise tables will show a 0 with no decimal nor currency symbol
@@ -396,43 +399,17 @@ function to_decimals($number, $decimal_type, $type=\NumberFormatter::DECIMAL)
 	}
 
 	$config = get_instance()->config;
+	$fmt = new \NumberFormatter($config->item('number_locale'), $type);
+	$fmt->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, empty($decimals) ? DEFAULT_PRECISION : $config->item($decimals));
+	$fmt->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, empty($decimals) ? DEFAULT_PRECISION : $config->item($decimals));
 
-	$decimals = $config->item($decimal_type);
+	if(empty($config->item('thousands_separator')))
+	{
+		$fmt->setAttribute(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL, '');
+	}
+	$fmt->setSymbol(\NumberFormatter::CURRENCY_SYMBOL, $config->item('currency_symbol'));
 
-	$CI =& get_instance();
-
-	$exchange_rate_set = $CI->session->flashdata('exchange_rate_set');
-
-	$apply_exchange_rate = $exchange_rate_set == NULL ? FALSE : $exchange_rate_set['apply_exchange_rate'];
-
-if ($apply_exchange_rate) {
-    // Apply exchange rate if needed
-    $exchange_rate = $exchange_rate_set['exchange_rate'];
-    $number_locale_alt = $exchange_rate_set['number_locale_alt'];
-
-    // Perform multiplication and rounding with exchange rate
-    $number = round(bcmul($number, $exchange_rate, $decimals + 1), $decimals);
-
-    // Create NumberFormatter with alternate locale and currency symbol
-    $fmt = new \NumberFormatter($number_locale_alt, $type);
-    $fmt->setSymbol(\NumberFormatter::CURRENCY_SYMBOL, $exchange_rate_set['currency_symbol_alt']);
-} else {
-    // Use default NumberFormatter without exchange rate
-    $fmt = new \NumberFormatter($config->item('number_locale'), $type);
-    $fmt->setSymbol(\NumberFormatter::CURRENCY_SYMBOL, $config->item('currency_symbol'));
-}
-
-// Set minimum and maximum fraction digits
-$fmt->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, $decimals);
-$fmt->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
-
-// Optionally, remove grouping separator if configured
-if (empty($config->item('thousands_separator'))) {
-    $fmt->setAttribute(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL, '');
-}
-
-// Format the number using the configured formatter
-return $fmt->format($number);
+	return $fmt->format($number);
 }
 
 function parse_quantity($number)
@@ -448,7 +425,6 @@ function parse_tax($number)
 function parse_decimals($number, $decimals = NULL)
 {
 	// ignore empty strings and return
-
 	if(empty($number))
 	{
 		return $number;
@@ -466,14 +442,12 @@ function parse_decimals($number, $decimals = NULL)
 
 	$config = get_instance()->config;
 
-	if($decimals == NULL)
+	if($decimals === NULL)
 	{
 		$decimals = $config->item('currency_decimals');
 	}
 
 	$fmt = new \NumberFormatter($config->item('number_locale'), \NumberFormatter::DECIMAL);
-
-	$fmt->setAttribute(\NumberFormatter::FRACTION_DIGITS, $decimals);
 
 	if(empty($config->item('thousands_separator')))
 	{
@@ -626,12 +600,13 @@ function dateformat_bootstrap($php_format)
 
 function valid_date($date)
 {
-	return preg_match('/^([0-9]{2,4})-([0-1][0-9])-([0-3][0-9])(?:( [0-2][0-9]):([0-5][0-9]):([0-5][0-9]))?$/', $date);
+	$config = get_instance()->Appconfig;
+	return (DateTime::createFromFormat($config->get('dateformat'), $date));
 }
 
 function valid_decimal($decimal)
 {
-	return preg_match('/^(\d*\.)?\d+$/', $decimal);
+	return (preg_match('/^(\d*\.)?\d+$/', $decimal) === 1);
 }
 
 ?>

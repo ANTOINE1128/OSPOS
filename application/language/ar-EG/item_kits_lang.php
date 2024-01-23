@@ -1,5 +1,4 @@
-<?php 
-
+<?php
 $lang["item_kits_add_item"] = "إضافة مجموعة";
 $lang["item_kits_all"] = "الكل";
 $lang["item_kits_cannot_be_deleted"] = "لايمكن حذف مجموعة/مجموعات.";
@@ -14,9 +13,10 @@ $lang["item_kits_error_adding_updating"] = "خطاء فى إضافة/تحديث 
 $lang["item_kits_find_kit_item"] = "صنف لمجموعة";
 $lang["item_kits_info"] = "معلومات المجموعة";
 $lang["item_kits_item"] = "صنف";
-$lang["item_kits_item_kit_number"] = "";
-$lang["item_kits_item_kit_number_duplicate"] = "";
+$lang["item_kits_item_kit_number"] = "الباركود";
+$lang["item_kits_item_kit_number_duplicate"] = "رقم مجموعة الأصناف موجود في قاعدة البيانات.";
 $lang["item_kits_item_number"] = "";
+$lang["item_kits_item_number_duplicate"] = "";
 $lang["item_kits_items"] = "أصناف";
 $lang["item_kits_kit"] = "كود المجموعة";
 $lang["item_kits_kit_and_components"] = "المجموعة ومحتوياتها";
@@ -35,4 +35,5 @@ $lang["item_kits_sequence"] = "التسلسل";
 $lang["item_kits_successful_adding"] = "لقد تم إضافة المجموعة بنجاح";
 $lang["item_kits_successful_deleted"] = "لقد تم حذف المجموعة بنجاح";
 $lang["item_kits_successful_updating"] = "لقد تم تحديث بيانات المجموعة بنجاح";
+$lang["item_kits_unit_price"] = "";
 $lang["item_kits_update"] = "تحديث بيانات مجموعة";

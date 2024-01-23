@@ -16,7 +16,7 @@ class Detailed_sales extends Report
 			'summary' => array(
 				array('id' => $this->lang->line('reports_sale_id')),
 				array('type_code' => $this->lang->line('reports_code_type')),
-				array('sale_date' => $this->lang->line('reports_date'), 'sortable' => FALSE),
+				array('sale_time' => $this->lang->line('reports_date'), 'sortable' => FALSE),
 				array('quantity' => $this->lang->line('reports_quantity')),
 				array('employee_name' => $this->lang->line('reports_sold_by')),
 				array('customer_name' => $this->lang->line('reports_sold_to')),
@@ -48,7 +48,7 @@ class Detailed_sales extends Report
 	public function getDataBySaleId($sale_id)
 	{
 		$this->db->select('sale_id,
-			sale_date,
+			sale_time as sale_time,
 			SUM(quantity_purchased) AS items_purchased,
 			MAX(employee_name) AS employee_name,
 			MAX(customer_name) AS customer_name,
@@ -79,7 +79,7 @@ class Detailed_sales extends Report
 			ELSE \'\'
 			END) AS type_code,
 			MAX(sale_status) as sale_status,
-			MAX(sale_date) AS sale_date,
+			MAX(sale_time) AS sale_time,
 			SUM(quantity_purchased) AS items_purchased,
 			MAX(employee_name) AS employee_name,
 			MAX(customer_name) AS customer_name,
@@ -135,7 +135,7 @@ class Detailed_sales extends Report
 		}
 
 		$this->db->group_by('sale_id');
-		$this->db->order_by('MAX(sale_date)');
+		$this->db->order_by('MAX(sale_time)');
 
 		$data = array();
 		$data['summary'] = $this->db->get()->result_array();
@@ -169,7 +169,7 @@ class Detailed_sales extends Report
 				$this->db->join('attribute_links', 'attribute_links.item_id = sales_items_temp.item_id AND attribute_links.sale_id = sales_items_temp.sale_id AND definition_id IN (' . implode(',', $inputs['definition_ids']) . ')', 'left');
 				$this->db->join('attribute_values', 'attribute_values.attribute_id = attribute_links.attribute_id', 'left');
 			}
-			$this->db->group_by('sales_items_temp.sale_id, sales_items_temp.item_id');
+			$this->db->group_by('sales_items_temp.sale_id, sales_items_temp.item_id, sales_items_temp.line');
 			$this->db->where('sales_items_temp.sale_id', $value['sale_id']);
 			$data['details'][$key] = $this->db->get()->result_array();
 

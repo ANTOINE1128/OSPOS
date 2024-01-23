@@ -1,10 +1,11 @@
-<?php 
-
-$lang["module_attributes"] = "";
-$lang["module_attributes_desc"] = "";
+<?php
+$lang["module_admin_cashups"] = "";
+$lang["module_admin_cashups_desc"] = "";
+$lang["module_attributes"] = "Attributs";
+$lang["module_attributes_desc"] = "Ajout, mise à jour, suppression et recherche d'attributs.";
 $lang["module_both"] = "Tous les deux";
-$lang["module_cashups"] = "";
-$lang["module_cashups_desc"] = "";
+$lang["module_cashups"] = "Encaissements";
+$lang["module_cashups_desc"] = "Ajout, mise à jour, suppression et recherche d'encaissements.";
 $lang["module_config"] = "Paramètres";
 $lang["module_config_desc"] = "Paramètres de la boutique.";
 $lang["module_customers"] = "Clients";
@@ -39,3 +40,7 @@ $lang["module_suppliers"] = "Fournisseurs";
 $lang["module_suppliers_desc"] = "Ajouter, mettre à jour, supprimer et rechercher des fournisseurs.";
 $lang["module_taxes"] = "Taxe";
 $lang["module_taxes_desc"] = "Configurer les taxes de vente.";
+$lang["module_timeclocks"] = "";
+$lang["module_timeclocks_categories"] = "";
+$lang["module_timeclocks_categories_desc"] = "";
+$lang["module_timeclocks_desc"] = "";

@@ -1,11 +1,10 @@
-<?php 
-
+<?php
 $lang["taxes_add_exception"] = "Dodaj izuzetak";
 $lang["taxes_cascade"] = "Kaskada";
-$lang["taxes_cascade_sequence"] = "Kaskadni slijed";
+$lang["taxes_cascade_sequence"] = "Kaskadni redoslijed";
 $lang["taxes_city"] = "Mjesto";
 $lang["taxes_code"] = "Šifra poreza";
-$lang["taxes_confirm_delete"] = "Da li ste sigurni da želite da izbrišete ovu šifru poreza? Ova radnja se ne može opozvati?";
+$lang["taxes_confirm_delete"] = "Da li ste sigurni da želite da izbrišete ovu šifru poreza? Ova radnja se ne može opozvati";
 $lang["taxes_confirm_restore"] = "Da li ste sigurni da želite da vratite izabranu šifru poreza?";
 $lang["taxes_default_tax_category"] = "Podrazumjevana kategorija";
 $lang["taxes_default_tax_rate"] = "Podrazumjevana stopa poreza";
@@ -14,13 +13,14 @@ $lang["taxes_group_seq"] = "Grupa Sekv";
 $lang["taxes_jurisdiction_name"] = "Naziv nadležnosti";
 $lang["taxes_name"] = "Naziv";
 $lang["taxes_new"] = "Nova šifra poreza";
+$lang["taxes_no_taxes"] = "";
 $lang["taxes_no_taxes_to_display"] = "Nije dostupna nijedan šifra poreza";
 $lang["taxes_reporting_authority"] = "Organ za izvještavanje";
-$lang["taxes_round_half_down"] = "Half Down";
-$lang["taxes_round_half_even"] = "Half Even";
-$lang["taxes_round_half_odd"] = "Half Odd";
-$lang["taxes_round_half_up"] = "Half Up";
-$lang["taxes_rounding_code"] = "Zaokruživanje";
+$lang["taxes_round_half_down"] = "Pola dolje";
+$lang["taxes_round_half_even"] = "Pola ravnomjerno";
+$lang["taxes_round_half_odd"] = "Pola neparno";
+$lang["taxes_round_half_up"] = "Pola gore";
+$lang["taxes_rounding_code"] = "Kod zaokruživanja";
 $lang["taxes_sales_tax"] = "Porez na promet";
 $lang["taxes_sales_tax_by_invoice"] = "Porez na promet po fakturi";
 $lang["taxes_sequence"] = "Sekv.";

@@ -1,10 +1,11 @@
-<?php 
-
-$lang["module_attributes"] = "";
-$lang["module_attributes_desc"] = "";
+<?php
+$lang["module_admin_cashups"] = "";
+$lang["module_admin_cashups_desc"] = "";
+$lang["module_attributes"] = "Attributi";
+$lang["module_attributes_desc"] = "Aggiungi, aggiorna, cancella e ricerca attributi.";
 $lang["module_both"] = "Entrambi";
-$lang["module_cashups"] = "";
-$lang["module_cashups_desc"] = "";
+$lang["module_cashups"] = "Incassi";
+$lang["module_cashups_desc"] = "Aggiungi, aggiorna, elimina e cerca incassi.";
 $lang["module_config"] = "Configurazione";
 $lang["module_config_desc"] = "Modifica Configurazione OSPOS.";
 $lang["module_customers"] = "Clienti";
@@ -39,3 +40,7 @@ $lang["module_suppliers"] = "Fornitori";
 $lang["module_suppliers_desc"] = "Aggiungi, Aggiorna, Modifica, e Ricerca Fornitori.";
 $lang["module_taxes"] = "Imposte";
 $lang["module_taxes_desc"] = "Configura Imposte.";
+$lang["module_timeclocks"] = "";
+$lang["module_timeclocks_categories"] = "";
+$lang["module_timeclocks_categories_desc"] = "";
+$lang["module_timeclocks_desc"] = "";
