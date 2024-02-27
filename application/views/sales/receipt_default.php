@@ -224,11 +224,16 @@
 $inputValue = '<script>document.write(localStorage.getItem("inputValue"));</script>';
 ?>
 
-<!-- Display the inputValue in the sales receipt -->
-<tr>
+<tr id="currencyRateRow">
     <td>LBP CURRENCY RATE <span id="inputValueDisplay"></span></td>
     <!-- Display the total LBP -->
     <td id="totalLBP">Total LBP: <span id="calculatedTotalLBP"></span></td>
+</tr>
+<tr>
+    <td colspan="2">
+        <label for="showCurrencyRate"> Print LBP Currency Rate</label>
+        <input type="checkbox" id="showCurrencyRate">
+    </td>
 </tr>
 
 <?php
@@ -245,26 +250,34 @@ $inputValue = '<script>document.write(localStorage.getItem("inputValue"));</scri
 	</div>
 </div>
 <script>
-    // Retrieve the inputValue from local storage
-    var inputValue = localStorage.getItem("inputValue");
-    document.getElementById("inputValueDisplay").innerText = inputValue;
+  // Retrieve the inputValue from local storage
+var inputValue = localStorage.getItem("inputValue");
+document.getElementById("inputValueDisplay").innerText = inputValue;
 
-    // Check if inputValue is a valid number
-    if (!isNaN(inputValue)) {
-        // Convert inputValue to a number
-        inputValue = parseFloat(inputValue);
+// Check if inputValue is a valid number
+if (!isNaN(inputValue)) {
+    // Convert inputValue to a number
+    inputValue = parseFloat(inputValue);
 
-        // Check if $total is a valid number
-        if (!isNaN(<?php echo $total; ?>)) {
-            // Multiply inputValue by $total and display the result
-            var calculatedTotalLBP = inputValue * <?php echo $total; ?>;
-            document.getElementById("calculatedTotalLBP").innerText = calculatedTotalLBP;
-        } else {
-            // Handle the case where $total is not a valid number
-            console.error('Invalid total amount.');
-        }
+    // Check if $total is a valid number
+    if (!isNaN(<?php echo $total; ?>)) {
+        // Multiply inputValue by $total and display the result
+        var calculatedTotalLBP = inputValue * <?php echo $total; ?>;
+        document.getElementById("calculatedTotalLBP").innerText = calculatedTotalLBP;
     } else {
-        // Handle the case where inputValue is not a valid number
-        console.error('Invalid input value.');
+        // Handle the case where $total is not a valid number
+        console.error('Invalid total amount.');
     }
+} else {
+    // Handle the case where inputValue is not a valid number
+    console.error('Invalid input value.');
+}
+
+// Add event listener to checkbox
+document.getElementById("showCurrencyRate").addEventListener("change", function() {
+    var currencyRateRow = document.getElementById("currencyRateRow");
+    // Toggle visibility of currency rate row based on checkbox state
+    currencyRateRow.style.display = this.checked ? "table-row" : "none";
+});
+
 </script>
